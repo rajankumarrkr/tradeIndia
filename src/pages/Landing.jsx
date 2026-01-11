@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { apiPost } from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "../components/Toast";
 
 function Landing() {
     const { login } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLogin, setIsLogin] = useState(true);
     const [formData, setFormData] = useState({
         mobile: "",
@@ -17,6 +18,16 @@ function Landing() {
         referralCode: ""
     });
     const [loading, setLoading] = useState(false);
+
+    // Read referral code from URL query parameter
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const refCode = params.get('ref');
+        if (refCode) {
+            setFormData(prev => ({ ...prev, referralCode: refCode }));
+            setIsLogin(false); // Switch to register mode if referral code is present
+        }
+    }, [location.search]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

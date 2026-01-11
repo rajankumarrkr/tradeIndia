@@ -14,28 +14,28 @@ import { ToastProvider } from "./components/Toast";
 function App() {
   const { user } = useAuth();
 
-  if (!user) {
-    return (
-      <ToastProvider>
-        <Landing />
-      </ToastProvider>
-    );
-  }
-
   return (
     <ToastProvider>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
-          <Route path="/plan" element={<Plan />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/mine" element={<Mine />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/history" element={<History />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </MainLayout>
+      <Routes>
+        {/* Admin routes - accessible without login */}
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin" element={<Admin />} />
+
+        {/* Public route - Landing page for non-logged in users */}
+        {!user && <Route path="*" element={<Landing />} />}
+
+        {/* Protected routes - only for logged in users */}
+        {user && (
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/plan" element={<Plan />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/mine" element={<Mine />} />
+            <Route path="/history" element={<History />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        )}
+      </Routes>
     </ToastProvider>
   );
 }
