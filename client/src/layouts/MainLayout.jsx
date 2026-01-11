@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom";
 
-function MainLayout({ children }) {
+function MainLayout() {
   const location = useLocation();
   const current = location.pathname;
 
@@ -15,7 +15,7 @@ function MainLayout({ children }) {
     <div className="min-h-screen flex flex-col bg-gray-50 pb-24">
       {/* Main Content Area */}
       <main className="flex-1 w-full max-w-md mx-auto bg-white min-h-screen shadow-2xl overflow-hidden relative">
-        {children}
+        <Outlet />
       </main>
 
       {/* Full Width Bottom Navigation */}

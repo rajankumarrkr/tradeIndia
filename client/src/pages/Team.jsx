@@ -8,7 +8,7 @@ function Team() {
   const { showToast } = useToast();
   const [teamData, setTeamData] = useState({ teamSize: 0, teamIncome: 0 });
   const referralCode = user?.referralCode || "XXXX1234";
-  const referralLink = `https://tradeindia.com/register?ref=${referralCode}`;
+  const referralLink = `${window.location.origin}?ref=${referralCode}`;
 
   useEffect(() => {
     const loadTeamData = async () => {
