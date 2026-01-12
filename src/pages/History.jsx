@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiGet } from "../api";
 import { useAuth } from "../context/AuthContext";
 
 function History() {
+    const navigate = useNavigate();
     const { user } = useAuth();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,7 +29,17 @@ function History() {
 
     return (
         <div className="p-4 pb-20 font-['Poppins']">
-            <h1 className="text-xl font-bold mb-4">Transaction History</h1>
+            <div className="flex items-center gap-3 mb-4">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+                <h1 className="text-xl font-bold">Transaction History</h1>
+            </div>
 
             <div className="flex gap-2 mb-4">
                 <button onClick={() => setType("all")} className={`px-4 py-1 rounded-full text-sm font-medium ${type === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}>All</button>

@@ -56,7 +56,7 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -146,7 +146,7 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
             <button
               type="submit"
               disabled={loading || !bankAccounts || bankAccounts.length === 0}
-              className="w-full bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl py-3.5 text-sm font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl py-3.5 text-sm font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:hover:scale-100 mb-24"
             >
               {loading ? "Processing..." : "Confirm Withdrawal"}
             </button>

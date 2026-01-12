@@ -1,5 +1,5 @@
 // AddBankModal.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiPost } from "../api";
 import { useAuth } from "../context/AuthContext";
 
@@ -13,6 +13,13 @@ function AddBankModal({ onClose, onSuccess }) {
     branch: "",
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,12 +56,12 @@ function AddBankModal({ onClose, onSuccess }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black/40"
         onClick={loading ? undefined : onClose}
       />
-      <div className="relative z-50 bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-5">
+      <div className="relative z-[100] bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
         <h2 className="text-lg font-semibold mb-1">Add bank account</h2>
         <p className="text-xs text-gray-500 mb-4">
           Withdrawals will be sent to this bank account.

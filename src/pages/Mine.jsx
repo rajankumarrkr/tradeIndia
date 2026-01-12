@@ -4,6 +4,7 @@ import { apiGet } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../components/Toast";
 import AddBankModal from "../components/AddBankModal";
+import LogoutModal from "../components/LogoutModal";
 
 function Mine() {
   const { user, logout } = useAuth();
@@ -12,6 +13,7 @@ function Mine() {
   const [wallet, setWallet] = useState({ balance: 0, totalRecharge: 0, totalIncome: 0 });
   const [bankAccounts, setBankAccounts] = useState([]);
   const [showAddBank, setShowAddBank] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const loadWallet = async () => {
     if (!user) return;
@@ -39,11 +41,13 @@ function Mine() {
   }, [user]);
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      logout();
-      showToast("Logged out successfully");
-      navigate("/");
-    }
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    showToast("Logged out successfully");
+    navigate("/");
   };
 
   return (
@@ -196,6 +200,13 @@ function Mine() {
         <AddBankModal
           onClose={() => setShowAddBank(false)}
           onSuccess={loadBankAccounts}
+        />
+      )}
+
+      {showLogoutModal && (
+        <LogoutModal
+          onClose={() => setShowLogoutModal(false)}
+          onConfirm={confirmLogout}
         />
       )}
     </div>
