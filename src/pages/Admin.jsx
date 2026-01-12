@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { apiGet, apiPost } from "../api";
+import { apiGet, apiPost, apiPut, apiDelete } from "../api";
 
 function Admin() {
     const [users, setUsers] = useState([]);
@@ -102,6 +102,15 @@ function Admin() {
                             }`}
                     >
                         Settings
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("plans")}
+                        className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap ${activeTab === "plans"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-600 border"
+                            }`}
+                    >
+                        Plans
                     </button>
                 </div>
 
@@ -220,6 +229,185 @@ function Admin() {
                 )}
 
                 {activeTab === "settings" && <SettingsTab />}
+                {activeTab === "plans" && <PlansTab />}
+            </div>
+        </div>
+    );
+}
+
+function PlansTab() {
+    const [plans, setPlans] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [editingPlan, setEditingPlan] = useState(null);
+    const [formData, setFormData] = useState({
+        name: "",
+        investAmount: "",
+        dailyIncome: "",
+        durationDays: 99,
+        totalIncome: ""
+    });
+
+    useEffect(() => {
+        loadPlans();
+    }, []);
+
+    const loadPlans = async () => {
+        try {
+            const data = await apiGet("/plans");
+            setPlans(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            if (editingPlan) {
+                await apiPut(`/admin/plans/${editingPlan._id}`, formData);
+                alert("Plan updated!");
+            } else {
+                await apiPost("/admin/plans", formData);
+                alert("Plan created!");
+            }
+            setEditingPlan(null);
+            setFormData({ name: "", investAmount: "", dailyIncome: "", durationDays: 99, totalIncome: "" });
+            loadPlans();
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEdit = (plan) => {
+        setEditingPlan(plan);
+        setFormData({
+            name: plan.name,
+            investAmount: plan.investAmount,
+            dailyIncome: plan.dailyIncome,
+            durationDays: plan.durationDays,
+            totalIncome: plan.totalIncome
+        });
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm("Are you sure you want to delete this plan?")) return;
+        try {
+            await apiDelete(`/admin/plans/${id}`);
+            alert("Plan deleted!");
+            loadPlans();
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-lg font-bold mb-4">{editingPlan ? "Edit Plan" : "Add New Plan"}</h2>
+                <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Plan Name</label>
+                        <input
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={e => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full border rounded-lg p-2 mt-1"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Investment Amount</label>
+                        <input
+                            type="number"
+                            required
+                            value={formData.investAmount}
+                            onChange={e => setFormData({ ...formData, investAmount: e.target.value })}
+                            className="w-full border rounded-lg p-2 mt-1"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Daily Income</label>
+                        <input
+                            type="number"
+                            required
+                            value={formData.dailyIncome}
+                            onChange={e => setFormData({ ...formData, dailyIncome: e.target.value })}
+                            className="w-full border rounded-lg p-2 mt-1"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Duration (Days)</label>
+                        <input
+                            type="number"
+                            required
+                            value={formData.durationDays}
+                            onChange={e => setFormData({ ...formData, durationDays: e.target.value })}
+                            className="w-full border rounded-lg p-2 mt-1"
+                        />
+                    </div>
+                    <div className="md:col-span-2 flex gap-2">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            {loading ? "Processing..." : (editingPlan ? "Update Plan" : "Add Plan")}
+                        </button>
+                        {editingPlan && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEditingPlan(null);
+                                    setFormData({ name: "", investAmount: "", dailyIncome: "", durationDays: 99, totalIncome: "" });
+                                }}
+                                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300"
+                            >
+                                Cancel
+                            </button>
+                        )}
+                    </div>
+                </form>
+            </div>
+
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <table className="w-full text-sm text-left">
+                    <thead className="bg-gray-100 text-gray-600 font-bold">
+                        <tr>
+                            <th className="p-3">Plan Name</th>
+                            <th className="p-3">Amount</th>
+                            <th className="p-3">Daily</th>
+                            <th className="p-3">Days</th>
+                            <th className="p-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {plans.map((p) => (
+                            <tr key={p._id} className="border-b hover:bg-gray-50">
+                                <td className="p-3 font-medium">{p.name}</td>
+                                <td className="p-3">₹{p.investAmount}</td>
+                                <td className="p-3">₹{p.dailyIncome}</td>
+                                <td className="p-3">{p.durationDays}</td>
+                                <td className="p-3 text-right space-x-2">
+                                    <button
+                                        onClick={() => handleEdit(p)}
+                                        className="text-blue-600 hover:text-blue-800 font-medium"
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(p._id)}
+                                        className="text-red-600 hover:text-red-800 font-medium"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
