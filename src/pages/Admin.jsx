@@ -423,7 +423,7 @@ function SettingsTab() {
 
     const loadSettings = async () => {
         try {
-            const res = await apiGet("/settings");
+            const res = await apiGet("/admin/settings");
             if (res) setData(res);
         } catch (err) {
             console.error(err);
@@ -434,7 +434,7 @@ function SettingsTab() {
         e.preventDefault();
         setLoading(true);
         try {
-            await apiPost("/settings", data);
+            await apiPost("/admin/settings", data);
             alert("Settings saved!");
         } catch (err) {
             alert("Failed to save");
