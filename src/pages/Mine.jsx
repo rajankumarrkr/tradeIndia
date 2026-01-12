@@ -79,37 +79,74 @@ function Mine() {
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <h2 className="text-lg font-bold text-gray-900 mb-4">Menu</h2>
         <div className="space-y-3">
-          <Link to="/history" className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors">
-            <span className="text-lg">📊</span>
-            <span className="font-medium">Income/Transactions Record</span>
+          <Link to="/my-investments" className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 rounded-xl transition-all duration-200 border border-transparent hover:border-emerald-100 group">
+            <span className="text-xl bg-emerald-100 p-2 rounded-lg group-hover:scale-110 transition-transform">💰</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm">My Investments</p>
+              <p className="text-[10px] text-gray-500 opacity-80 font-medium">View your daily earnings & plans</p>
+            </div>
+            <svg className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
+
+          <Link to="/history" className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-200 border border-transparent hover:border-blue-100 group">
+            <span className="text-xl bg-blue-100 p-2 rounded-lg group-hover:scale-110 transition-transform">📊</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm">Transactions Record</p>
+              <p className="text-[10px] text-gray-500 opacity-80 font-medium">Track your income & withdrawals</p>
+            </div>
+            <svg className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+
           <button
             onClick={() => setShowAddBank(true)}
-            className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-purple-50 hover:text-purple-600 rounded-xl transition-all duration-200 border border-transparent hover:border-purple-100 group"
           >
-            <span className="text-lg">🏦</span>
-            <span className="font-medium">Add Bank Account</span>
+            <span className="text-xl bg-purple-100 p-2 rounded-lg group-hover:scale-110 transition-transform">🏦</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm">Bank Accounts</p>
+              <p className="text-[10px] text-gray-500 opacity-80 font-medium">Manage your withdrawal methods</p>
+            </div>
+            <svg className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
+
           <a
             href="https://t.me/Stakesbs"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+            className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-sky-50 hover:text-sky-600 rounded-xl transition-all duration-200 border border-transparent hover:border-sky-100 group"
           >
-            <span className="text-lg">💬</span>
-            <span className="font-medium">Support (Telegram)</span>
+            <span className="text-xl bg-sky-100 p-2 rounded-lg group-hover:scale-110 transition-transform">💬</span>
+            <div className="flex-1">
+              <p className="font-bold text-sm">Help & Support</p>
+              <p className="text-[10px] text-gray-500 opacity-80 font-medium">Get in touch via Telegram</p>
+            </div>
+            <svg className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </a>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 p-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-          >
-            <span className="text-lg">🚪</span>
-            <span className="font-medium">Logout</span>
-          </button>
+
+          <div className="pt-2">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 p-3 text-left text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 border border-transparent hover:border-red-100 group"
+            >
+              <span className="text-xl bg-red-100 p-2 rounded-lg group-hover:scale-110 transition-transform">🚪</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm">Logout</p>
+                <p className="text-[10px] text-red-400 opacity-80 font-medium">Sign out from your account</p>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Bank Accounts */}
+      {/* Bank Accounts Section */}
       <div className="bg-white rounded-2xl shadow-lg p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold text-gray-900">Bank Accounts</h2>
