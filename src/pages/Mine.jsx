@@ -91,7 +91,7 @@ function Mine() {
             <span className="font-medium">Add Bank Account</span>
           </button>
           <a
-            href="https://t.me/tradeindia_support"
+            href="https://t.me/Stakesbs"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full flex items-center gap-3 p-3 text-left text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"

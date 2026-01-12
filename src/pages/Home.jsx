@@ -145,7 +145,7 @@ function Home() {
               <span className="text-white/80 text-xs font-medium">Active</span>
             </div>
             <h4 className="text-white font-bold text-lg mb-1">Investment Plans</h4>
-            <p className="text-blue-100 text-sm">Earn daily returns up to 5%</p>
+            <p className="text-blue-100 text-sm">Earn daily returns up to 10%</p>
           </div>
 
           <div
