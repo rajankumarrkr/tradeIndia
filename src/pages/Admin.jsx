@@ -25,6 +25,7 @@ function Admin() {
             setUsers(data);
         } catch (err) {
             console.error(err);
+            alert("Failed to load users: " + err.message);
         }
     };
 
@@ -43,6 +44,7 @@ function Admin() {
             setPendingTx(data || []);
         } catch (err) {
             console.error(err);
+            alert("Failed to load transactions: " + err.message);
         }
     };
 
@@ -193,9 +195,9 @@ function Admin() {
                                         <p className="font-bold text-gray-900 mt-1">₹{tx.amount}</p>
                                         <p className="text-xs text-gray-500">
                                             User:{" "}
-                                            {typeof tx.user === "object"
+                                            {typeof tx.user === "object" && tx.user !== null
                                                 ? `${tx.user.name} (${tx.user.mobile})`
-                                                : tx.user}
+                                                : tx.user || "Unknown User"}
                                         </p>
                                         {tx.meta?.utr && (
                                             <p className="text-xs text-blue-600">UTR: {tx.meta.utr}</p>

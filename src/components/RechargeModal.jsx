@@ -23,12 +23,13 @@ function RechargeModal({ onClose }) {
   const fetchSettings = async () => {
     try {
       const data = await apiGet("/settings");
+      console.log("Fetched settings for recharge:", data);
       if (data) {
         if (data.upiId) setUpiId(data.upiId);
         if (data.qrCodeUrl) setQrCode(data.qrCodeUrl);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch settings:", err);
     }
   };
 

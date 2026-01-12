@@ -14,7 +14,7 @@ function History() {
 
     const fetchHistory = async () => {
         try {
-            const res = await apiGet(`/transactions/${user.id}`);
+            const res = await apiGet(`/wallet/transactions/${user.id}`);
             setData(res || []);
         } catch (err) {
             console.error(err);
