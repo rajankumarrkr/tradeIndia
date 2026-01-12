@@ -25,20 +25,30 @@ function Plan() {
   }, []);
 
   const handleBuy = async (plan) => {
+    console.log("Handling buy for plan:", plan?._id, "User:", user?.id);
     if (!user) {
       showToast("Please login first", "error");
       return;
     }
     if (buying) return;
+
+    // Check if user has enough balance frontend side too for better UX
+    // Note: real check happens on backend
+
     setBuying(true);
     try {
       const res = await apiPost("/plans/buy", {
-        userId: user.id,
+        userId: user.id || user._id, // Handle both just in case
         planId: plan._id,
       });
-      showToast(`Plan purchased! New wallet balance: ₹${res.walletBalance}`);
+      console.log("Purchase response:", res);
+      showToast(`Plan purchased! New balance: ₹${res.walletBalance}`);
+
+      // Optional: Refresh local state or redirect
+      // window.location.reload(); // Or update context
     } catch (err) {
-      showToast(err.message, "error");
+      console.error("Purchase error details:", err);
+      showToast(err.message || "Purchase failed", "error");
     } finally {
       setBuying(false);
     }

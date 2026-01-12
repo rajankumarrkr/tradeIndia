@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiGet } from "../api";
 import { useAuth } from "../context/AuthContext";
 import RechargeModal from "../components/RechargeModal";
@@ -6,6 +7,7 @@ import WithdrawModal from "../components/WithdrawModal";
 
 function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [wallet, setWallet] = useState({
     balance: 0,
     totalRecharge: 0,
@@ -133,7 +135,7 @@ function Home() {
         </h3>
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div
-            onClick={() => window.location.href = '/plan'}
+            onClick={() => navigate('/plan')}
             className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-lg cursor-pointer hover:shadow-xl transition-all active:scale-95 group"
           >
             <div className="flex items-center justify-between mb-3">
@@ -147,7 +149,7 @@ function Home() {
           </div>
 
           <div
-            onClick={() => window.location.href = '/team'}
+            onClick={() => navigate('/team')}
             className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 shadow-lg cursor-pointer hover:shadow-xl transition-all active:scale-95 group"
           >
             <div className="flex items-center justify-between mb-3">
@@ -249,7 +251,7 @@ function Home() {
             <h2 className="text-white text-2xl font-bold mb-2 text-shadow-lg">Invest Your Amount</h2>
             <p className="text-blue-100 text-lg font-medium">Get Daily Returns Instantly</p>
             <button
-              onClick={() => window.location.href = '/plan'}
+              onClick={() => navigate('/plan')}
               className="mt-4 bg-white text-blue-600 px-6 py-2 rounded-full font-bold shadow-lg hover:bg-blue-50 transition-colors"
             >
               Start Investing
