@@ -70,10 +70,26 @@ function Admin() {
         }
     };
 
+    const handleTriggerROI = async () => {
+        try {
+            if (!confirm("This will credit daily income to all active investments for today. Proceed?")) return;
+            const res = await apiPost("/admin/trigger-roi", {});
+            alert(`Success: ${res.creditedInvestments} investments credited.`);
+        } catch (err) {
+            alert("ROI Trigger failed: " + err.message);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
-            <div className="bg-white shadow p-4 mb-4">
+            <div className="bg-white shadow p-4 mb-4 flex justify-between items-center">
                 <h1 className="text-xl font-bold">Admin Dashboard</h1>
+                <button
+                    onClick={handleTriggerROI}
+                    className="bg-orange-500 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-orange-600 shadow-sm transition"
+                >
+                    🚀 Trigger Daily ROI
+                </button>
             </div>
 
             <div className="px-4">
@@ -201,6 +217,15 @@ function Admin() {
                                         </p>
                                         {tx.meta?.utr && (
                                             <p className="text-xs text-blue-600">UTR: {tx.meta.utr}</p>
+                                        )}
+                                        {tx.type === "withdraw" && tx.meta?.bankDetails && (
+                                            <div className="mt-2 p-2 bg-gray-50 rounded border border-gray-200 text-[10px] space-y-0.5">
+                                                <p className="font-bold text-gray-700">Bank Details:</p>
+                                                <p><span className="text-gray-500">Holder:</span> {tx.meta.bankDetails.accountHolder}</p>
+                                                <p><span className="text-gray-500">Bank:</span> {tx.meta.bankDetails.bankName}</p>
+                                                <p><span className="text-gray-500">A/C No:</span> {tx.meta.bankDetails.accountNumber}</p>
+                                                <p><span className="text-gray-500">IFSC:</span> {tx.meta.bankDetails.ifsc}</p>
+                                            </div>
                                         )}
                                     </div>
                                     <div className="text-right">

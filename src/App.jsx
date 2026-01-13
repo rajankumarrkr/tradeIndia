@@ -22,7 +22,8 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<Admin />} />
 
-        {/* Public route - Landing page for non-logged in users */}
+        {/* Public route - Landing page for non-logged in users or referral links */}
+        {(!user || window.location.search.includes('ref=')) && <Route path="/landing" element={<Landing />} />}
         {!user && <Route path="*" element={<Landing />} />}
 
         {/* Protected routes - only for logged in users */}

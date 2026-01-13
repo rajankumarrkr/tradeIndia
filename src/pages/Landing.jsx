@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useToast } from "../components/Toast";
 
 function Landing() {
-    const { login } = useAuth();
+    const { login, logout, user } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
     const location = useLocation();
@@ -25,9 +25,18 @@ function Landing() {
         const refCode = params.get('ref');
         if (refCode) {
             setFormData(prev => ({ ...prev, referralCode: refCode }));
-            setIsLogin(false); // Switch to register mode if referral code is present
+
+            // If user is already logged in, we might want to show them a message
+            // but for now, let's at least switch to register mode if they logout
+            setIsLogin(false);
+
+            if (user) {
+                // Auto-logout to allow the "new member" registration flow as requested
+                logout();
+                showToast(`Session closed to allow new registration with code: ${refCode}`, "info");
+            }
         }
-    }, [location.search]);
+    }, [location.search, user, showToast, logout]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
