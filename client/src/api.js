@@ -6,10 +6,35 @@ export async function apiGet(path) {
 }
 
 export async function apiPost(path, body) {
+  const isFormData = body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     method: "POST",
+    headers: isFormData ? {} : { "Content-Type": "application/json" },
+    body: isFormData ? body : JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+  return data;
+}
+
+export async function apiPut(path, body) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+  return data;
+}
+
+export async function apiDelete(path) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "DELETE",
   });
   const data = await res.json();
   if (!res.ok) {

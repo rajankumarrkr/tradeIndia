@@ -56,7 +56,7 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -65,10 +65,10 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
 
       {/* Modal Content */}
       <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all scale-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
-        <div className="bg-gradient-to-r from-red-500 to-rose-600 p-6 text-white text-center relative overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-y-10 -translate-x-10 blur-xl"></div>
           <h2 className="text-xl font-bold mb-1 relative z-10">Withdraw Funds</h2>
-          <p className="text-xs opacity-90 relative z-10 text-red-50">
+          <p className="text-xs opacity-90 relative z-10 text-emerald-50">
             Transfer money to your bank account
           </p>
           <button
@@ -82,9 +82,9 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
         </div>
 
         <div className="p-6">
-          <div className="bg-red-50 border border-red-100 rounded-xl p-3 mb-6 flex gap-3 items-start">
+          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 mb-6 flex gap-3 items-start">
             <div className="min-w-[20px] text-lg">⚠️</div>
-            <p className="text-xs text-red-800 leading-relaxed">
+            <p className="text-xs text-emerald-800 leading-relaxed">
               <strong>Note:</strong> A 15% GST/Service fee will be deducted from your withdrawal amount automatically.
             </p>
           </div>
@@ -101,13 +101,13 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
                   min="1"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-4 py-3 text-sm font-semibold focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-8 pr-4 py-3 text-sm font-semibold focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
                   placeholder="Enter amount"
                 />
               </div>
 
               <div className="flex justify-between items-center mt-2 px-1">
-                <span className="text-[10px] text-gray-500">Service Fee (15%): <span className="text-red-500">₹{isNaN(gst) ? 0 : gst}</span></span>
+                <span className="text-[10px] text-gray-500">Service Fee (15%): <span className="text-emerald-600">₹{isNaN(gst) ? 0 : gst}</span></span>
                 <span className="text-[10px] font-bold text-gray-700">You Receive: ₹{isNaN(receiveAmount) ? 0 : receiveAmount}</span>
               </div>
             </div>
@@ -121,7 +121,7 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
                   <select
                     value={selectedBankId}
                     onChange={(e) => setSelectedBankId(e.target.value)}
-                    className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                    className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
                   >
                     {bankAccounts.map((b) => (
                       <option key={b._id} value={b._id}>
@@ -146,7 +146,7 @@ function WithdrawModal({ onClose, onSuccess, bankAccounts }) {
             <button
               type="submit"
               disabled={loading || !bankAccounts || bankAccounts.length === 0}
-              className="w-full bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl py-3.5 text-sm font-bold shadow-lg shadow-red-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl py-3.5 text-sm font-bold shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:hover:scale-100 mb-24"
             >
               {loading ? "Processing..." : "Confirm Withdrawal"}
             </button>

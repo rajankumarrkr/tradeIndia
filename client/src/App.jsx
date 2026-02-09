@@ -9,6 +9,7 @@ import History from "./pages/History";
 import Landing from "./pages/Landing";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import MyInvestments from "./pages/MyInvestments";
 import { ToastProvider } from "./components/Toast";
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/admin" element={<Admin />} />
 
-        {/* Public route - Landing page for non-logged in users */}
+        {/* Public route - Landing page for non-logged in users or referral links */}
+        {(!user || window.location.search.includes('ref=')) && <Route path="/landing" element={<Landing />} />}
         {!user && <Route path="*" element={<Landing />} />}
 
         {/* Protected routes - only for logged in users */}
@@ -32,6 +34,7 @@ function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/mine" element={<Mine />} />
             <Route path="/history" element={<History />} />
+            <Route path="/my-investments" element={<MyInvestments />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         )}

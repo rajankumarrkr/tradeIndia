@@ -8,13 +8,13 @@ function Team() {
   const { showToast } = useToast();
   const [teamData, setTeamData] = useState({ teamSize: 0, teamIncome: 0 });
   const referralCode = user?.referralCode || "XXXX1234";
-  const referralLink = `${window.location.origin}?ref=${referralCode}`;
+  const referralLink = `${window.location.origin}/landing?ref=${referralCode}`;
 
   useEffect(() => {
     const loadTeamData = async () => {
       if (!user) return;
       try {
-        const data = await apiGet(`/team/${user.id}`);
+        const data = await apiGet(`/wallet/team/${user.id}`);
         setTeamData(data);
       } catch (err) {
         console.error(err);

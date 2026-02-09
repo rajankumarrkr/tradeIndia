@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiGet } from "../api";
 import { useAuth } from "../context/AuthContext";
 import RechargeModal from "../components/RechargeModal";
@@ -6,6 +7,7 @@ import WithdrawModal from "../components/WithdrawModal";
 
 function Home() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [wallet, setWallet] = useState({
     balance: 0,
     totalRecharge: 0,
@@ -127,36 +129,114 @@ function Home() {
           </div>
         </div>
 
-        {/* Quick Actions / Features */}
+        {/* Investment Opportunities */}
         <h3 className="text-lg font-bold text-gray-800 mb-4 px-1">
-          Quick Actions
+          Investment Opportunities
         </h3>
-        <div className="grid grid-cols-4 gap-3 mb-8">
-          {[
-            { label: "Plans", icon: "🚀", color: "bg-orange-100 text-orange-600", path: "/plan" },
-            { label: "Team", icon: "👥", color: "bg-blue-100 text-blue-600", path: "/team" },
-            { label: "Service", icon: "🎧", color: "bg-pink-100 text-pink-600", link: "https://t.me/tradeindia_support" },
-            { label: "App", icon: "📱", color: "bg-teal-100 text-teal-600", action: () => alert("App coming soon!") },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="flex flex-col items-center gap-2 group cursor-pointer"
-              onClick={() => {
-                if (item.path) window.location.href = item.path; // Simple redirect for now, better to use useNavigate/Link if refactoring entire map
-                else if (item.link) window.open(item.link, '_blank');
-                else if (item.action) item.action();
-              }}
-            >
-              <div
-                className={`w-14 h-14 ${item.color} rounded-2xl flex items-center justify-center text-2xl shadow-sm group-active:scale-90 transition-transform`}
-              >
-                {item.icon}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div
+            onClick={() => navigate('/plan')}
+            className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-lg cursor-pointer hover:shadow-xl transition-all active:scale-95 group"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl backdrop-blur-sm group-hover:scale-110 transition-transform">
+                🚀
               </div>
-              <span className="text-xs font-medium text-gray-600">
-                {item.label}
-              </span>
+              <span className="text-white/80 text-xs font-medium">Active</span>
             </div>
-          ))}
+            <h4 className="text-white font-bold text-lg mb-1">Investment Plans</h4>
+            <p className="text-blue-100 text-sm">Earn daily returns up to 10%</p>
+          </div>
+
+          <div
+            onClick={() => navigate('/team')}
+            className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 shadow-lg cursor-pointer hover:shadow-xl transition-all active:scale-95 group"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center text-2xl backdrop-blur-sm group-hover:scale-110 transition-transform">
+                👥
+              </div>
+              <span className="text-white/80 text-xs font-medium">New</span>
+            </div>
+            <h4 className="text-white font-bold text-lg mb-1">Referral Bonus</h4>
+            <p className="text-purple-100 text-sm">Invite friends & earn rewards</p>
+          </div>
+        </div>
+
+        {/* Market Insights */}
+        <h3 className="text-lg font-bold text-gray-800 mb-4 px-1">
+          Market Insights
+        </h3>
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 mb-8">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-xl mx-auto mb-2">
+                📈
+              </div>
+              <p className="text-xs text-gray-500 font-medium mb-1">Trading Volume</p>
+              <p className="text-base font-bold text-gray-900">₹12.5M</p>
+            </div>
+            <div className="text-center border-l border-r border-gray-200">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-xl mx-auto mb-2">
+                ⚡
+              </div>
+              <p className="text-xs text-gray-500 font-medium mb-1">Active Users</p>
+              <p className="text-base font-bold text-gray-900">2,847</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-xl mx-auto mb-2">
+                💰
+              </div>
+              <p className="text-xs text-gray-500 font-medium mb-1">Total Earnings</p>
+              <p className="text-base font-bold text-gray-900">₹8.2M</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Platform Features */}
+        <h3 className="text-lg font-bold text-gray-800 mb-4 px-1">
+          Why Choose Us
+        </h3>
+        <div className="space-y-4 mb-8">
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 flex items-start gap-4 hover:shadow-xl transition-shadow">
+            <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+              🛡️
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold text-gray-900 mb-1">Secure & Trusted</h4>
+              <p className="text-sm text-gray-600">Bank-level security with encrypted transactions</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 flex items-start gap-4 hover:shadow-xl transition-shadow">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+              ⚡
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold text-gray-900 mb-1">Instant Withdrawals</h4>
+              <p className="text-sm text-gray-600">Withdraw your earnings anytime, processed instantly</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 flex items-start gap-4 hover:shadow-xl transition-shadow">
+            <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
+              🎧
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold text-gray-900 mb-1">24/7 Support</h4>
+              <p className="text-sm text-gray-600">
+                Get help anytime via{" "}
+                <a
+                  href="https://t.me/tradeindia_support"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-pink-600 font-semibold hover:underline"
+                >
+                  Telegram
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Promotional Banners */}
@@ -171,7 +251,7 @@ function Home() {
             <h2 className="text-white text-2xl font-bold mb-2 text-shadow-lg">Invest Your Amount</h2>
             <p className="text-blue-100 text-lg font-medium">Get Daily Returns Instantly</p>
             <button
-              onClick={() => window.location.href = '/plan'}
+              onClick={() => navigate('/plan')}
               className="mt-4 bg-white text-blue-600 px-6 py-2 rounded-full font-bold shadow-lg hover:bg-blue-50 transition-colors"
             >
               Start Investing
