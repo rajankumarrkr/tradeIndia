@@ -13,7 +13,7 @@ import MyInvestments from "./pages/MyInvestments";
 import { ToastProvider } from "./components/Toast";
 
 function App() {
-  alert("CLIENT BUILD LIVE");
+
 
   const { user } = useAuth();
 
