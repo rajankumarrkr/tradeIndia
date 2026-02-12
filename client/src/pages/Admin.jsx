@@ -102,6 +102,31 @@ function Admin() {
         }
     };
 
+    const formatImageUrl = (url) => {
+        if (!url) return "";
+        if (url.startsWith("http") || url.startsWith("data:")) return url;
+        const apiUrl = import.meta.env.VITE_API_URL || "";
+        return `${apiUrl.replace("/api", "")}/${url.replace(/\\/g, "/")}`;
+    };
+
+    const handleDownload = async (imageUrl, filename) => {
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename || "screenshot.png";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error("Download failed:", err);
+            alert("Failed to download image");
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             <div className="bg-white shadow p-4 mb-4 flex justify-between items-center">
@@ -242,15 +267,23 @@ function Admin() {
                                         )}
                                         {tx.meta?.screenshot && (
                                             <div className="mt-3">
-                                                <p className="text-xs text-gray-500 mb-1 font-bold">Payment Screenshot:</p>
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <p className="text-xs text-gray-500 font-bold">Payment Screenshot:</p>
+                                                    <button
+                                                        onClick={() => handleDownload(formatImageUrl(tx.meta.screenshot), `recharge-${tx._id}.png`)}
+                                                        className="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded font-bold hover:bg-blue-200 transition"
+                                                    >
+                                                        Download
+                                                    </button>
+                                                </div>
                                                 <a
-                                                    href={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${tx.meta.screenshot.replace(/\\/g, '/')}`}
+                                                    href={formatImageUrl(tx.meta.screenshot)}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     className="block border rounded-lg overflow-hidden hover:opacity-90 transition shadow-sm max-w-[200px]"
                                                 >
                                                     <img
-                                                        src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/${tx.meta.screenshot.replace(/\\/g, '/')}`}
+                                                        src={formatImageUrl(tx.meta.screenshot)}
                                                         alt="Screenshot"
                                                         className="w-full h-auto object-cover"
                                                     />
@@ -530,11 +563,6 @@ function SettingsTab() {
         }
     };
 
-    const formatImageUrl = (url) => {
-        if (!url) return "";
-        if (url.startsWith("http") || url.startsWith("data:")) return url;
-        return `${import.meta.env.VITE_API_URL.replace("/api", "")}/${url.replace(/\\/g, "/")}`;
-    };
 
     return (
         <div className="bg-white rounded-lg shadow p-6">

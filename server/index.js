@@ -1,13 +1,13 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const cron = require("node-cron");
 const { runDailyROI } = require("./src/services/roiService");
 
 const connectDB = require("./src/config/db");
 const routes = require("./src/routes");
-
-dotenv.config();
 
 const app = express();
 
