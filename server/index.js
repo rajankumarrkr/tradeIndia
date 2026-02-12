@@ -20,8 +20,21 @@ app.use((req, res, next) => {
   console.log(`[V3.4.0 LOG] ${req.method} ${req.url} - IP: ${req.ip}`);
   next();
 });
+
+// CRITICAL FIX: Skip body parsing for multipart/form-data
+// Let multer handle it instead
+app.use((req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  if (contentType.includes('multipart/form-data')) {
+    console.log("Skipping body parser for multipart request");
+    return next(); // Skip to next middleware without parsing
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // CORS configuration - allow both production and development
 const allowedOrigins = [

@@ -23,46 +23,70 @@ const cloudinary = require("../config/cloudinaryConfig");
 
 // RECHARGE: create recharge request (pending, manual UPI)
 const createRecharge = async (req, res) => {
-  console.log("createRecharge handler started - V3.4.0");
+  console.log("=== CREATE RECHARGE HANDLER V3.4.1 ===");
   try {
     console.log("Headers:", req.headers["content-type"]);
+    console.log("req.body type:", typeof req.body);
+    console.log("req.body content:", req.body);
+    console.log("req.file present:", !!req.file);
 
-    // Check Cloudinary Config Presence
+    // Check Cloudinary Config
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!cloudName || !apiKey || !apiSecret) {
-      console.error("DIAGNOSTIC: Cloudinary environment variables are MISSING!");
+      console.error("Cloudinary environment variables are MISSING!");
+      return res.status(500).json({ message: "Server configuration error" });
     } else {
-      console.log("DIAGNOSTIC: Cloudinary environment variables are present.");
+      console.log("Cloudinary environment variables are present.");
     }
 
-    if (!req.body) {
-      console.error("DIAGNOSTIC: req.body is undefined!");
-      return res.status(400).json({ message: "Request body is missing. Ensure multipart/form-data is used." });
+    // CRITICAL: Validate req.body exists and is an object
+    if (!req.body || typeof req.body !== 'object') {
+      console.error("CRITICAL ERROR: req.body is invalid!", req.body);
+      return res.status(400).json({ 
+        message: "Request body parsing failed. Body type: " + typeof req.body 
+      });
     }
 
-    const { userId, amount, utr, upiId } = req.body || {};
-    console.log("Body Fields:", { userId, amount, utr, upiId });
+    const { userId, amount, utr, upiId } = req.body;
+    console.log("Extracted fields:", { userId, amount, utr, upiId });
 
+    // Validate all required fields
     if (!userId || !amount || !utr || !upiId) {
-      return res.status(400).json({ message: "All fields are required (userId, amount, utr, upiId)" });
+      console.error("Missing required fields:", { 
+        hasUserId: !!userId, 
+        hasAmount: !!amount, 
+        hasUtr: !!utr, 
+        hasUpiId: !!upiId 
+      });
+      return res.status(400).json({ 
+        message: "All fields are required (userId, amount, utr, upiId)" 
+      });
     }
 
+    // Validate file upload
     if (!req.file) {
-      console.error("DIAGNOSTIC: req.file is missing!");
-      return res.status(400).json({ message: "Please upload payment screenshot (file missing)" });
+      console.error("req.file is missing!");
+      return res.status(400).json({ 
+        message: "Please upload payment screenshot" 
+      });
     }
 
     console.log("File detected:", req.file.originalname, "Size:", req.file.size);
 
+    // Validate amount
     const num = Number(amount);
     if (isNaN(num) || num < MIN_AMOUNT) {
-      return res.status(400).json({ message: `Minimum recharge amount is ${MIN_AMOUNT}` });
+      return res.status(400).json({ 
+        message: `Minimum recharge amount is ${MIN_AMOUNT}` 
+      });
     }
 
+    // Validate userId format
     if (!mongoose.Types.ObjectId.isValid(userId)) {
+      console.error("Invalid userId format:", userId);
       return res.status(400).json({ message: "Invalid user ID format" });
     }
 
@@ -77,7 +101,7 @@ const createRecharge = async (req, res) => {
               console.error("Cloudinary Callback Error:", error);
               reject(error);
             } else {
-              console.log("Cloudinary Upload Success");
+              console.log("Cloudinary Upload Success:", result.secure_url);
               resolve(result);
             }
           }
@@ -91,11 +115,14 @@ const createRecharge = async (req, res) => {
       cloudinaryResult = await uploadToCloudinary();
     } catch (uploadErr) {
       console.error("Cloudinary Upload Promise Failed:", uploadErr);
-      return res.status(500).json({ message: "Cloudinary upload failed: " + uploadErr.message });
+      return res.status(500).json({ 
+        message: "Cloudinary upload failed: " + uploadErr.message 
+      });
     }
 
     const screenshot = cloudinaryResult.secure_url;
 
+    // Create transaction
     const tx = await Transaction.create({
       user: userId,
       type: "recharge",
@@ -112,7 +139,11 @@ const createRecharge = async (req, res) => {
     });
   } catch (err) {
     console.error("Create recharge FATAL error:", err);
-    res.status(500).json({ message: "Internal Server Error: " + err.message });
+    console.error("Error stack:", err.stack);
+    res.status(500).json({ 
+      message: "Server error",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 
