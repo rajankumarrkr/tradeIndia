@@ -15,6 +15,7 @@ const app = express();
    MIDDLEWARES
 ======================= */
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration - allow both production and development
 const allowedOrigins = [

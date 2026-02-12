@@ -66,6 +66,12 @@ function RechargeModal({ onClose }) {
 
     setLoading(true);
     try {
+      if (!user?.id) {
+        showToast("Session error. Please login again.", "error");
+        setLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("userId", user.id);
       formData.append("amount", num);
@@ -79,7 +85,8 @@ function RechargeModal({ onClose }) {
       showToast("Recharge request submitted. Wait for admin approval.");
       onClose();
     } catch (err) {
-      showToast(err.message, "error");
+      console.error("Recharge submission error:", err);
+      showToast(err.message || "Failed to submit recharge request", "error");
     } finally {
       setLoading(false);
     }

@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const dir = "uploads/";
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         }
         cb(null, dir);
     },
@@ -23,7 +23,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post("/recharge", upload.single("screenshot"), paymentController.createRecharge);
+router.post("/recharge", (req, res, next) => {
+    console.log("RECHARGE ROUTE HIT. Content-Type:", req.headers["content-type"]);
+    next();
+}, upload.single("screenshot"), paymentController.createRecharge);
 router.post("/withdraw", paymentController.createWithdrawal);
 router.get("/settings", adminController.getSettings);
 

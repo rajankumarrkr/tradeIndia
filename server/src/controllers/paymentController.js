@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 const Wallet = require("../models/Wallet");
 const Transaction = require("../models/Transaction");
 const BankAccount = require("../models/BankAccount");
@@ -21,23 +22,30 @@ const ensureWallet = async (userId) => {
 // RECHARGE: create recharge request (pending, manual UPI)
 const createRecharge = async (req, res) => {
   try {
+    console.log("RECHARGE REQUEST HEADERS:", req.headers);
+    console.log("RECHARGE REQUEST BODY TYPE:", typeof req.body);
+
+    if (!req.body) {
+      console.error("CRITICAL: req.body is undefined!");
+      return res.status(400).json({ message: "Request body is missing" });
+    }
+
     const { userId, amount, utr, upiId } = req.body;
     const screenshot = req.file ? req.file.path : null;
 
+    console.log("Create Recharge Request:", { userId, amount, utr, upiId, screenshot });
+
     if (!userId || !amount || !utr || !upiId) {
-      if (screenshot) {
-        // Cleanup file if validation fails
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
+      if (screenshot && fs.existsSync(screenshot)) {
+        fs.unlinkSync(screenshot);
       }
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const num = Number(amount);
     if (isNaN(num) || num < MIN_AMOUNT) {
-      if (screenshot) {
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
+      if (screenshot && fs.existsSync(screenshot)) {
+        fs.unlinkSync(screenshot);
       }
       return res
         .status(400)
@@ -45,9 +53,8 @@ const createRecharge = async (req, res) => {
     }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      if (screenshot) {
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
+      if (screenshot && fs.existsSync(screenshot)) {
+        fs.unlinkSync(screenshot);
       }
       return res.status(400).json({ message: "Invalid user ID format" });
     }
@@ -60,13 +67,20 @@ const createRecharge = async (req, res) => {
       meta: { utr, upiId, screenshot },
     });
 
+    console.log("Recharge Transaction Created:", tx._id);
+
     res.status(201).json({
       message: "Recharge request created, waiting for admin approval",
       transaction: tx,
     });
   } catch (err) {
-    console.error("Create recharge error:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Create recharge error DETAILS:", {
+      message: err.message,
+      stack: err.stack,
+      body: req.body,
+      file: req.file
+    });
+    res.status(500).json({ message: "Server error: " + err.message });
   }
 };
 
