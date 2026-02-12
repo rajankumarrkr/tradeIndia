@@ -24,52 +24,76 @@ const cloudinary = require("../config/cloudinaryConfig");
 // RECHARGE: create recharge request (pending, manual UPI)
 const createRecharge = async (req, res) => {
   try {
-    console.log("RECHARGE REQUEST HEADERS:", req.headers);
-    console.log("RECHARGE REQUEST BODY TYPE:", typeof req.body);
+    console.log("RECHARGE ROUTE START");
+    console.log("Headers:", req.headers["content-type"]);
+
+    // Check Cloudinary Config Presence
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      console.error("DIAGNOSTIC: Cloudinary environment variables are MISSING!");
+    } else {
+      console.log("DIAGNOSTIC: Cloudinary environment variables are present.");
+    }
 
     if (!req.body) {
-      console.error("CRITICAL: req.body is undefined!");
-      return res.status(400).json({ message: "Request body is missing" });
+      console.error("DIAGNOSTIC: req.body is undefined!");
+      return res.status(400).json({ message: "Request body is missing. Ensure multipart/form-data is used." });
     }
 
     const { userId, amount, utr, upiId } = req.body;
-
-    console.log("Create Recharge Request:", { userId, amount, utr, upiId });
+    console.log("Body Fields:", { userId, amount, utr, upiId });
 
     if (!userId || !amount || !utr || !upiId) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "All fields are required (userId, amount, utr, upiId)" });
     }
 
     if (!req.file) {
-      return res.status(400).json({ message: "Please upload payment screenshot" });
+      console.error("DIAGNOSTIC: req.file is missing!");
+      return res.status(400).json({ message: "Please upload payment screenshot (file missing)" });
     }
+
+    console.log("File detected:", req.file.originalname, "Size:", req.file.size);
 
     const num = Number(amount);
     if (isNaN(num) || num < MIN_AMOUNT) {
-      return res
-        .status(400)
-        .json({ message: `Minimum recharge amount is ${MIN_AMOUNT}` });
+      return res.status(400).json({ message: `Minimum recharge amount is ${MIN_AMOUNT}` });
     }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID format" });
     }
 
-    // Upload to Cloudinary using buffer
+    // Upload to Cloudinary
+    console.log("Starting Cloudinary Upload...");
     const uploadToCloudinary = () => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           { folder: "recharges" },
           (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
+            if (error) {
+              console.error("Cloudinary Callback Error:", error);
+              reject(error);
+            } else {
+              console.log("Cloudinary Upload Success");
+              resolve(result);
+            }
           }
         );
         stream.end(req.file.buffer);
       });
     };
 
-    const cloudinaryResult = await uploadToCloudinary();
+    let cloudinaryResult;
+    try {
+      cloudinaryResult = await uploadToCloudinary();
+    } catch (uploadErr) {
+      console.error("Cloudinary Upload Promise Failed:", uploadErr);
+      return res.status(500).json({ message: "Cloudinary upload failed: " + uploadErr.message });
+    }
+
     const screenshot = cloudinaryResult.secure_url;
 
     const tx = await Transaction.create({
@@ -87,13 +111,8 @@ const createRecharge = async (req, res) => {
       transaction: tx,
     });
   } catch (err) {
-    console.error("Create recharge error DETAILS:", {
-      message: err.message,
-      stack: err.stack,
-      body: req.body,
-      file: req.file ? "File present" : "No file"
-    });
-    res.status(500).json({ message: "Server error: " + err.message });
+    console.error("Create recharge FATAL error:", err);
+    res.status(500).json({ message: "Internal Server Error: " + err.message });
   }
 };
 
