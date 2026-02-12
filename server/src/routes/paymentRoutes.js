@@ -8,7 +8,10 @@ const adminController = require("../controllers/adminController");
 
 // Multer storage config using memory storage
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+});
 
 router.post("/recharge", (req, res, next) => {
     console.log("RECHARGE ROUTE HIT. Content-Type:", req.headers["content-type"]);

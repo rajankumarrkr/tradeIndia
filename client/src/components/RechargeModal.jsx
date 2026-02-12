@@ -76,7 +76,7 @@ function RechargeModal({ onClose }) {
       }
 
       const formData = new FormData();
-      formData.append("userId", user.id);
+      formData.append("userId", user._id);
       formData.append("amount", num);
       formData.append("utr", utr);
       formData.append("upiId", upiId);
@@ -210,14 +210,14 @@ function RechargeModal({ onClose }) {
               <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">
                 Payment Screenshot
               </label>
-            <div className="flex flex-col items-center justify-center w-full">
+              <div className="flex flex-col items-center justify-center w-full">
                 <label className="flex flex-col items-center justify-center w-full min-h-[128px] border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all overflow-hidden">
                   <div className="flex flex-col items-center justify-center py-4 text-center px-4 w-full">
                     {previewUrl ? (
                       <div className="relative w-full group">
-                        <img 
-                          src={previewUrl} 
-                          alt="Preview" 
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
                           className="max-h-48 w-full object-contain rounded-lg"
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
