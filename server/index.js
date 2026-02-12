@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-console.log("SERVER BOOTING - VERSION 3.3.0 - RECHARGE DEBUG");
+console.log("SERVER BOOTING - VERSION 3.4.0 - RECHARGE DEBUG");
 
 const express = require("express");
 const cors = require("cors");
@@ -17,7 +17,7 @@ const app = express();
    MIDDLEWARES
 ======================= */
 app.use((req, res, next) => {
-  console.log(`[V3.3.0 LOG] ${req.method} ${req.url} - IP: ${req.ip}`);
+  console.log(`[V3.4.0 LOG] ${req.method} ${req.url} - IP: ${req.ip}`);
   next();
 });
 app.use(express.json());
@@ -61,7 +61,7 @@ connectDB();
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.status(200).json({ status: "ok", version: "3.3.0", message: "TradeIndia backend is running" });
+  res.status(200).json({ status: "ok", version: "3.4.0", message: "TradeIndia backend is running" });
 });
 
 /* =======================

@@ -76,7 +76,7 @@ function RechargeModal({ onClose }) {
       }
 
       const formData = new FormData();
-      formData.append("userId", user.id);
+      formData.append("userId", user._id);
       formData.append("amount", num);
       formData.append("utr", utr);
       formData.append("upiId", upiId);

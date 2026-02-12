@@ -9,7 +9,7 @@ const bankRoutes = require("./bankRoutes");
 const adminRoutes = require("./adminRoutes");
 
 router.get("/health", (req, res) => {
-  res.json({ status: "ok", version: "3.2.0", message: "TradeIndia API running" });
+  res.json({ status: "ok", version: "3.4.0", message: "TradeIndia API running" });
 });
 
 router.use("/auth", authRoutes);
