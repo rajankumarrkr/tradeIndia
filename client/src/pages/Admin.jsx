@@ -3,12 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { apiGet, apiPost, apiPut, apiDelete } from "../api";
 
+// Move formatImageUrl OUTSIDE components so all components can use it
+const formatImageUrl = (url) => {
+    if (!url) return "";
+    if (url.startsWith("http") || url.startsWith("data:")) return url;
+    const apiUrl = import.meta.env.VITE_API_URL || "";
+    return `${apiUrl.replace("/api", "")}/${url.replace(/\\\\/g, "/")}`;
+};
+
 function Admin() {
     const [users, setUsers] = useState([]);
     const [pendingTx, setPendingTx] = useState([]);
     const [activeTab, setActiveTab] = useState("users");
     const navigate = useNavigate();
-    const { user } = useAuth(); // Get user from a simulated auth hook
+    const { user } = useAuth();
 
     useEffect(() => {
         if (!user || !user?.isAdmin) {
@@ -19,7 +27,7 @@ function Admin() {
         loadTransactions();
     }, [user, navigate]);
 
-    const loadUsers = async () => { // Renamed from fetchUsers
+    const loadUsers = async () => {
         try {
             const data = await apiGet("/admin/users");
             setUsers(data);
@@ -38,7 +46,7 @@ function Admin() {
         }
     };
 
-    const loadTransactions = async () => { // Renamed from fetchPendingTx
+    const loadTransactions = async () => {
         try {
             const data = await apiGet("/admin/pending-transactions");
             setPendingTx(data || []);
@@ -53,7 +61,7 @@ function Admin() {
             if (!confirm("Approve this recharge?")) return;
             await apiPost(`/admin/approve-recharge/${id}`, {});
             alert("Approved");
-            loadTransactions(); // Changed from fetchPendingTx
+            loadTransactions();
         } catch (err) {
             alert(err.message);
         }
@@ -100,13 +108,6 @@ function Admin() {
         } catch (err) {
             alert("ROI Trigger failed: " + err.message);
         }
-    };
-
-    const formatImageUrl = (url) => {
-        if (!url) return "";
-        if (url.startsWith("http") || url.startsWith("data:")) return url;
-        const apiUrl = import.meta.env.VITE_API_URL || "";
-        return `${apiUrl.replace("/api", "")}/${url.replace(/\\/g, "/")}`;
     };
 
     const handleDownload = async (imageUrl, filename) => {
@@ -218,7 +219,7 @@ function Admin() {
                                             <button
                                                 onClick={async () => {
                                                     if (!confirm(`Are you sure you want to ${u.isBlocked ? 'unblock' : 'block'} this user?`)) return;
-                                                    await apiPost(`/admin/users/${u._id}/block`, {}); // Make sure route matches router
+                                                    await apiPost(`/admin/users/${u._id}/block`, {});
                                                     loadUsers();
                                                 }}
                                                 className={`text-xs px-3 py-1.5 rounded text-white font-medium ${u.isBlocked ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
@@ -563,7 +564,6 @@ function SettingsTab() {
         }
     };
 
-
     return (
         <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-bold mb-4">Payment Settings</h2>
@@ -607,6 +607,5 @@ function SettingsTab() {
         </div>
     );
 }
-
 
 export default Admin;
