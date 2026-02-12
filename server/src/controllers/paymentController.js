@@ -18,39 +18,48 @@ const ensureWallet = async (userId) => {
   return wallet;
 };
 
+const cloudinary = require("../config/cloudinaryConfig");
+
 // RECHARGE: create recharge request (pending, manual UPI)
 const createRecharge = async (req, res) => {
   try {
     const { userId, amount, utr, upiId } = req.body;
-    const screenshot = req.file ? req.file.path : null;
 
     if (!userId || !amount || !utr || !upiId) {
-      if (screenshot) {
-        // Cleanup file if validation fails
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
-      }
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Please upload payment screenshot" });
     }
 
     const num = Number(amount);
     if (isNaN(num) || num < MIN_AMOUNT) {
-      if (screenshot) {
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
-      }
       return res
         .status(400)
         .json({ message: `Minimum recharge amount is ${MIN_AMOUNT}` });
     }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      if (screenshot) {
-        const fs = require("fs");
-        if (fs.existsSync(screenshot)) fs.unlinkSync(screenshot);
-      }
       return res.status(400).json({ message: "Invalid user ID format" });
     }
+
+    // Upload to Cloudinary using buffer
+    const uploadToCloudinary = () => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: "recharges" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+    };
+
+    const cloudinaryResult = await uploadToCloudinary();
+    const screenshot = cloudinaryResult.secure_url;
 
     const tx = await Transaction.create({
       user: userId,
