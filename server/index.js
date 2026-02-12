@@ -1,6 +1,8 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+console.log("SERVER BOOTING - VERSION 3.0.0 - RECHARGE DEBUG");
+
 const express = require("express");
 const cors = require("cors");
 const cron = require("node-cron");

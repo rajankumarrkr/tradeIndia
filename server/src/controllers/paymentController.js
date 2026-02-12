@@ -43,7 +43,7 @@ const createRecharge = async (req, res) => {
       return res.status(400).json({ message: "Request body is missing. Ensure multipart/form-data is used." });
     }
 
-    const { userId, amount, utr, upiId } = req.body;
+    const { userId, amount, utr, upiId } = req.body || {};
     console.log("Body Fields:", { userId, amount, utr, upiId });
 
     if (!userId || !amount || !utr || !upiId) {
