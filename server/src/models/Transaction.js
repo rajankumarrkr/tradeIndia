@@ -11,7 +11,7 @@ const transactionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "success", "failed"],
+      enum: ["pending", "success", "failed", "rejected"],
       default: "success",
     },
     meta: { type: Object, default: {} }, // e.g. planId, UTR, bank info

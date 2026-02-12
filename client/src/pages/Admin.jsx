@@ -70,6 +70,28 @@ function Admin() {
         }
     };
 
+    const handleRejectRecharge = async (id) => {
+        try {
+            if (!confirm("Reject this recharge?")) return;
+            await apiPost(`/admin/reject-recharge/${id}`, {});
+            alert("Rejected");
+            loadTransactions();
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
+    const handleRejectWithdrawal = async (id) => {
+        try {
+            if (!confirm("Reject this withdrawal? Amount will be refunded.")) return;
+            await apiPost(`/admin/reject-withdrawal/${id}`, {});
+            alert("Rejected and Refunded");
+            loadTransactions();
+        } catch (err) {
+            alert(err.message);
+        }
+    };
+
     const handleTriggerROI = async () => {
         try {
             if (!confirm("This will credit daily income to all active investments for today. Proceed?")) return;
@@ -264,7 +286,14 @@ function Admin() {
                                     >
                                         Approve
                                     </button>
-                                    <button className="bg-red-50 text-red-600 py-1.5 rounded-lg text-sm font-medium hover:bg-red-100">
+                                    <button
+                                        onClick={() =>
+                                            tx.type === "recharge"
+                                                ? handleRejectRecharge(tx._id)
+                                                : handleRejectWithdrawal(tx._id)
+                                        }
+                                        className="bg-red-50 text-red-600 py-1.5 rounded-lg text-sm font-medium hover:bg-red-100"
+                                    >
                                         Reject
                                     </button>
                                 </div>

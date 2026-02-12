@@ -130,6 +130,48 @@ const approveWithdrawal = async (req, res) => {
   }
 };
 
+// Reject recharge
+const rejectRecharge = async (req, res) => {
+  try {
+    const { txId } = req.params;
+    const tx = await Transaction.findById(txId);
+    if (!tx || tx.type !== "recharge" || tx.status !== "pending") {
+      return res.status(400).json({ message: "Invalid transaction" });
+    }
+    tx.status = "rejected";
+    await tx.save();
+    res.json({ message: "Recharge rejected" });
+  } catch (err) {
+    console.error("Reject recharge error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Reject withdrawal (refunds balance)
+const rejectWithdrawal = async (req, res) => {
+  try {
+    const { txId } = req.params;
+    const tx = await Transaction.findById(txId);
+    if (!tx || tx.type !== "withdraw" || tx.status !== "pending") {
+      return res.status(400).json({ message: "Invalid transaction" });
+    }
+
+    // Refund balance to user wallet
+    const wallet = await Wallet.findOne({ user: tx.user });
+    if (wallet) {
+      wallet.balance += tx.amount;
+      await wallet.save();
+    }
+
+    tx.status = "rejected";
+    await tx.save();
+    res.json({ message: "Withdrawal rejected and amount refunded" });
+  } catch (err) {
+    console.error("Reject withdrawal error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 // Get settings
 const getSettings = async (req, res) => {
   try {
@@ -213,6 +255,8 @@ module.exports = {
   getPendingTransactions,
   approveRecharge,
   approveWithdrawal,
+  rejectRecharge,
+  rejectWithdrawal,
   getSettings,
   updateSettings,
   uploadQR,
