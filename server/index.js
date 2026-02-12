@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-console.log("SERVER BOOTING - VERSION 3.1.0 - RECHARGE DEBUG");
+console.log("SERVER BOOTING - VERSION 3.2.0 - RECHARGE DEBUG");
 
 const express = require("express");
 const cors = require("cors");
@@ -57,7 +57,7 @@ connectDB();
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.status(200).json({ status: "ok", version: "3.1.0", message: "TradeIndia backend is running" });
+  res.status(200).json({ status: "ok", version: "3.2.0", message: "TradeIndia backend is running" });
 });
 
 /* =======================
