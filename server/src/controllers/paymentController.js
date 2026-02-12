@@ -23,8 +23,8 @@ const cloudinary = require("../config/cloudinaryConfig");
 
 // RECHARGE: create recharge request (pending, manual UPI)
 const createRecharge = async (req, res) => {
+  console.log("createRecharge handler started - V3.1.0");
   try {
-    console.log("RECHARGE ROUTE START");
     console.log("Headers:", req.headers["content-type"]);
 
     // Check Cloudinary Config Presence
