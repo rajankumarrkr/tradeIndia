@@ -85,7 +85,7 @@ function History() {
                     label: "Withdrawal",
                     color: isRejected ? "text-red-500" : (isPending ? "text-amber-500" : "text-emerald-500"),
                     bgColor: isRejected ? "bg-red-50" : (isPending ? "bg-amber-50" : "bg-emerald-50"),
-                    sign: "-",
+                    sign: "",
                     statusLabel: status.charAt(0).toUpperCase() + status.slice(1),
                     statusColor: isRejected ? "text-red-600 bg-red-50 border-red-100" : (isPending ? "text-amber-600 bg-amber-50 border-amber-100" : "text-emerald-600 bg-emerald-50 border-emerald-100")
                 };
@@ -179,8 +179,8 @@ function History() {
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-400/20 rounded-full translate-y-12 -translate-x-12 blur-xl"></div>
 
                     <div className="relative z-10">
-                        <p className="text-indigo-100/70 text-xs font-medium mb-1">Total Profits</p>
-                        <h2 className="text-3xl font-extrabold text-white tracking-tight">₹{(stats.income + stats.recharge - stats.withdraw).toLocaleString('en-IN')}</h2>
+                        <p className="text-indigo-100/70 text-xs font-medium mb-1">Total Income</p>
+                        <h2 className="text-3xl font-extrabold text-white tracking-tight">₹{(stats.income + stats.recharge + stats.withdraw).toLocaleString('en-IN')}</h2>
 
                         <div className="grid grid-cols-2 gap-4 mt-8">
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
@@ -189,7 +189,7 @@ function History() {
                             </div>
                             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                                 <p className="text-white/60 text-[10px] font-medium mb-1">Outgoing</p>
-                                <p className="text-white text-lg font-bold">₹{stats.withdraw.toLocaleString('en-IN')}</p>
+                                <p className="text-white text-lg font-bold">+₹{stats.withdraw.toLocaleString('en-IN')}</p>
                             </div>
                         </div>
                     </div>
